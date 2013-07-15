@@ -7,6 +7,7 @@ describe Lou do
 
   context "with nil query" do
     let(:query) { nil }
+
     it "returns all records" do
       Person.should_receive(:all) { :all_records }
       res = Lou.query Person, query: query
