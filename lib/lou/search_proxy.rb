@@ -1,3 +1,6 @@
+require 'cgi'
+require 'shellwords'
+
 module Lou
   class SearchProxy
     attr_reader :model
