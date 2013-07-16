@@ -21,6 +21,20 @@ module Lou
       order.last
     end
 
+    def filter
+      unless @filter
+        @filter = {}
+        rules = ::Shellwords::shellwords params["filter"].first
+        rules.each do |rule|
+          attribute, operator_and_value = rule.split(':')
+          operator, value = operator_and_value.split('=')
+          value = value.split(',') if operator == "in"
+          @filter[attribute] = { operator: operator, value: value }
+        end
+      end
+      @filter
+    end
+
     private
 
     def params
@@ -35,14 +49,6 @@ module Lou
         else
           @order = [order_options, nil]
         end
-      end
-    end
-
-    def filter
-      params[:filter].map do |rule| 
-        escaped_rule = ::Shellword::shellwords rule                # "first_name:eq"first_name:eq=\"
-        attribute, operator_and_value = escapted_rule.split(':')
-        operator, value = operator_and_value.split('=')
       end
     end
 
