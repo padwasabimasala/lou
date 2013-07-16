@@ -3,8 +3,6 @@ require 'shellwords'
 
 module Lou
   class Search
-    attr_reader :query_string
-
     def initialize(query_string)
       @query_string = query_string
     end
@@ -38,7 +36,7 @@ module Lou
     private
 
     def params
-      @params ||= ::CGI::parse query_string
+      @params ||= ::CGI::parse @query_string
     end
 
     def order
