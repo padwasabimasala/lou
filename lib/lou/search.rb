@@ -22,11 +22,12 @@ module Lou
     def filter
       unless @filter
         @filter = {}
-        rules = ::Shellwords::shellwords params["filter"].first
+        # ["last_name:eq=Juan de Marco", "category_id:in=1,2,3"] ; last_name:eq=\"Juan de Marco\"+category_id:in=1,2,3
+        rules = ::Shellwords::shellwords params["filter"].first 
         rules.each do |rule|
-          attribute, operator_and_value = rule.split(':')
-          operator, value = operator_and_value.split('=')
-          value = value.split(',') if operator == "in"
+          attribute, operator_and_value = rule.split(':') # "category_id", "in=1,2,3"
+          operator, value = operator_and_value.split('=') # "in", "1,2,3"              
+          value = value.split(',') if operator == "in"    # ['1', '2', '3']
           @filter[attribute.to_sym] = { operator: operator.to_sym, value: value }
         end
       end
