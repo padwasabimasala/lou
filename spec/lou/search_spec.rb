@@ -25,6 +25,5 @@ describe Lou::Search do
       search.filter["last_name"].should eq({ operator: "eq", value: 'Juan de Marco' })
       search.filter["category_id"].should eq ({ operator: "in", value: ['1', '2', '3'] })
     end
-
   end
 end
