@@ -3,8 +3,9 @@ require 'lou'
 
 class Person
   class << self
-    def where *args; self; end
     def all *args; self; end
+    def where *args; self; end
+    def not *args; self; end
     def limit *args; self; end
     def order *args; self; end
   end

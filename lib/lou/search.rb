@@ -49,6 +49,7 @@ module Lou
           @order = [order_options, nil]
         end
       end
+      @order
     end
 
   end
