@@ -3,10 +3,6 @@ require 'shellwords'
 
 module Lou
   class SearchProxy
-    # author:eq=author where(author: author)
-    # category_id:in=1,2,3 where(category_id: [1,2,3]
-    # title:ne='shining' where.not(title: 'the shining')
-    #
     attr_reader :collection
 
     def initialize(model, options={})
