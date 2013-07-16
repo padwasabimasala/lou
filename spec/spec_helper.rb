@@ -2,13 +2,11 @@ $: << File.join(File.dirname(__FILE__), '..', 'lib')
 require 'lou'
 
 class Person
-  # Makes this class "feel" like active record 
   class << self
-    %w{ all where limit order not }.each do |name|
-      define_method name.to_sym do
-        self.new
-      end
-    end
+    def where *args; self; end
+    def all *args; self; end
+    def limit *args; self; end
+    def order *args; self; end
   end
 end
       

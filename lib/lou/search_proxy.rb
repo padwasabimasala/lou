@@ -16,6 +16,16 @@ module Lou
     end
 
     def query(query_string)
+      return collection if !query_string
+
+      search = Search.new query_string
+      search.filter.each do |attribute, params|
+        value = params[:value]
+        case params[:operator]
+        when "eq"
+          collection.where(attribute => value)
+        end
+      end
       collection
     end
 

@@ -10,7 +10,7 @@ describe Lou do
 
     it "returns all records" do
       Person.should_receive(:all) { :all_records }
-      res = Lou.query Person, query: query
+      res = Lou.query Person, query
       res.should be :all_records
     end
   end
