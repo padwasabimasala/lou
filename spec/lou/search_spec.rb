@@ -27,5 +27,4 @@ describe Lou::Search do
     end
 
   end
-
 end
