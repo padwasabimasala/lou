@@ -9,8 +9,33 @@ module Lou
       @query_string = query_string
     end
 
+    def limit
+      params["limit"].first.to_i
+    end
+
+    def order_by
+      order.first
+    end
+
+    def order_direction
+      order.last
+    end
+
+    private
+
     def params
       @params ||= ::CGI::parse query_string
+    end
+
+    def order
+      unless @order
+        order_options = params["order"].first
+        if order_options =~ /:/
+          @order = order_options.split(':')
+        else
+          @order = [order_options, nil]
+        end
+      end
     end
 
     def filter
@@ -21,8 +46,5 @@ module Lou
       end
     end
 
-    def limit
-      params["limit"].first.to_i
-    end
   end
 end
