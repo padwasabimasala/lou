@@ -7,8 +7,8 @@ describe Lou::SearchProxy do
   end
 
   it "parses the query into ActiveRecord query chain" do
-    Person.should_receive(:where).with("first_name" => "david").and_call_original
-    Person.should_receive(:where).with("last_name" => "benjesse").and_call_original
+    Person.should_receive(:where).with(first_name: "david").and_call_original
+    Person.should_receive(:where).with(last_name: "benjesse").and_call_original
     Lou::SearchProxy.new(Person).query "filter=first_name:eq=david+last_name:eq=benjesse&limit=10&order=id"
   end
 

@@ -14,16 +14,16 @@ describe Lou::Search do
     end
 
     it "has an order_by of id" do
-      search.order_by.should eq "id"
+      search.order_by.should eq :id
     end
 
     it "has an order_direction of desc" do
-      search.order_direction.should eq "desc"
+      search.order_direction.should eq :desc
     end
 
     it "has the correct filter" do
-      search.filter["last_name"].should eq({ operator: "eq", value: 'Juan de Marco' })
-      search.filter["category_id"].should eq ({ operator: "in", value: ['1', '2', '3'] })
+      search.filter[:last_name].should eq({ operator: :eq, value: 'Juan de Marco' })
+      search.filter[:category_id].should eq ({ operator: :in, value: ['1', '2', '3'] })
     end
   end
 end

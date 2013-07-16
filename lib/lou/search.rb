@@ -12,11 +12,11 @@ module Lou
     end
 
     def order_by
-      order.first
+      order.first.to_sym
     end
 
     def order_direction
-      order.last
+      order.last.to_sym
     end
 
     def filter
@@ -27,7 +27,7 @@ module Lou
           attribute, operator_and_value = rule.split(':')
           operator, value = operator_and_value.split('=')
           value = value.split(',') if operator == "in"
-          @filter[attribute] = { operator: operator, value: value }
+          @filter[attribute.to_sym] = { operator: operator.to_sym, value: value }
         end
       end
       @filter

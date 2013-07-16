@@ -22,7 +22,7 @@ module Lou
       search.filter.each do |attribute, params|
         value = params[:value]
         case params[:operator]
-        when "eq"
+        when :eq
           collection.where(attribute => value)
         end
       end
