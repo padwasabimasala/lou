@@ -62,4 +62,16 @@ describe Lou do
       Lou.query(Person, "filter=last_name:eq=smith&order=first_name:desc&limit=2").map{|p| p.first_name}.should eq ["eli", "dub"]
     end
   end
+
+  context "with a nil query string" do
+    it "returns all records" do
+      Lou.query(Person, nil).map{|p| p.first_name}.should eq ['bob', 'ada', 'dub', 'cam', 'eli']
+    end
+  end
+
+  context "with an empty query string" do
+    it "returns all records" do
+      Lou.query(Person, nil).map{|p| p.first_name}.should eq ['bob', 'ada', 'dub', 'cam', 'eli']
+    end
+  end
 end
