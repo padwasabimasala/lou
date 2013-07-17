@@ -5,14 +5,23 @@ describe Lou do
     Lou.should be_kind_of Module
   end
 
-  context "with nil query" do
-    let(:query) { nil }
+  context "with nil query string" do
+    let(:query_string) { nil }
 
     it "returns all records" do
-      Person.should_receive(:all) { :all_records }
-      res = Lou.query Person, query
-      res.should be :all_records
+      Person.should_receive(:all).and_call_original
+      res = Lou.query Person, query_string
+      res.should be Person
     end
   end
 
+  context "with empty query string" do
+    let(:query_string) { '' }
+
+    it "returns all records" do
+      Person.should_receive(:all).and_call_original
+      res = Lou.query Person, query_string
+      res.should be Person
+    end
+  end
 end

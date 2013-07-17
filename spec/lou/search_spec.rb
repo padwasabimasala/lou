@@ -26,4 +26,25 @@ describe Lou::Search do
       search.filter[:category_id].should eq ({ operator: :in, value: ['1', '2', '3'] })
     end
   end
+
+  context "with nil query string" do
+    let(:query_string) { nil }
+    let(:search) { Lou::Search.new(query_string) }
+
+    it "has a limit of nil" do
+      search.limit.should be nil
+    end
+
+    it "has an order_by of nil" do
+      search.order_by.should eq nil
+    end
+
+    it "has an order_direction of nil" do
+      search.order_direction.should eq nil
+    end
+
+    it "has an emptyfilter" do
+      search.filter.should eq({})
+    end
+  end
 end

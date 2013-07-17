@@ -4,26 +4,26 @@ require 'shellwords'
 module Lou
   class Search
     def initialize(query_string)
-      @query_string = query_string
+      @query_string = query_string || ""
     end
 
     def limit
-      params["limit"].first.to_i
+      params["limit"].map(&:to_i).first
     end
 
     def order_by
-      order.first.to_sym
+      order.map(&:to_sym).first
     end
 
     def order_direction
-      order.last.to_sym
+      order.map(&:to_sym).last
     end
 
     def filter
       unless @filter
         @filter = {}
         # ["last_name:eq=Juan de Marco", "category_id:in=1,2,3"] ; last_name:eq=\"Juan de Marco\"+category_id:in=1,2,3
-        rules = ::Shellwords::shellwords params["filter"].first 
+        rules = ::Shellwords::shellwords (params["filter"].first || "")
         rules.each do |rule|
           attribute, operator_and_value = rule.split(':') # "category_id", "in=1,2,3"
           operator, value = operator_and_value.split('=') # "in", "1,2,3"              
@@ -43,7 +43,9 @@ module Lou
     def order
       unless @order
         order_options = params["order"].first
-        if order_options =~ /:/
+        if order_options.nil?
+          @order  = []
+        elsif order_options =~ /:/
           @order = order_options.split(':')
         else
           @order = [order_options, nil]
