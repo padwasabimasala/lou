@@ -9,9 +9,9 @@ describe Lou do
     let(:query_string) { nil }
 
     it "returns all records" do
-      Person.should_receive(:all).and_call_original
-      res = Lou.query Person, query_string
-      res.should be Person
+      PersonMock.should_receive(:all).and_call_original
+      res = Lou.query PersonMock, query_string
+      res.should be PersonMock
     end
   end
 
@@ -19,9 +19,9 @@ describe Lou do
     let(:query_string) { '' }
 
     it "returns all records" do
-      Person.should_receive(:all).and_call_original
-      res = Lou.query Person, query_string
-      res.should be Person
+      PersonMock.should_receive(:all).and_call_original
+      res = Lou.query PersonMock, query_string
+      res.should be PersonMock
     end
   end
 end

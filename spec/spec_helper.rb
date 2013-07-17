@@ -1,7 +1,7 @@
 $: << File.join(File.dirname(__FILE__), '..', 'lib')
 require 'lou'
 
-class Person
+class PersonMock
   class << self
     def all *args; self; end
     def where *args; self; end
