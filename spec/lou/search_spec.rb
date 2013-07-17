@@ -47,4 +47,25 @@ describe Lou::Search do
       search.filter.should eq({})
     end
   end
+
+  context "with an empty query string" do
+    let(:query_string) { "" }
+    let(:search) { Lou::Search.new(query_string) }
+
+    it "has a limit of nil" do
+      search.limit.should be nil
+    end
+
+    it "has an order_by of nil" do
+      search.order_by.should eq nil
+    end
+
+    it "has an order_direction of nil" do
+      search.order_direction.should eq nil
+    end
+
+    it "has an emptyfilter" do
+      search.filter.should eq({})
+    end
+  end
 end
