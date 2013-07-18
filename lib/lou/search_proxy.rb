@@ -8,16 +8,16 @@ module Lou
     def initialize(model, options={})
       @model = model
       @options = options
-      @collection = model.all
+      @collection = model
     end
 
     def query(query_string)
-      return collection if !query_string
+      return finalize_collection if !query_string
       search = Search.new query_string
       apply_filter search
       apply_order search
       apply_limit search
-      collection
+      finalize_collection
     end
 
     private 
@@ -42,6 +42,10 @@ module Lou
 
     def apply_limit(search)
       @collection = collection.limit(search.limit)
+    end
+
+    def finalize_collection
+      @collection.all
     end
   end
 end
