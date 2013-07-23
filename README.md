@@ -96,27 +96,27 @@ Filters support equality, inequality, and inclusion.
 
 ```ruby
   # All users with first name 'Bob'
-  Lou.query(User, 'first_name:eq=bob')
+  Lou.query(User, 'filter=first_name:eq=bob')
 ```
 
 #### Inequality
 
 ```ruby
   # All users without the first name 'bob'
-  Lou.query(User, 'first_name:ne=bob')
+  Lou.query(User, 'filter=first_name:ne=bob')
 ```
 
 #### Inclusion
 
 ```ruby 
   # All users with first name 'bob', 'bib', or 'bub'
-  Lou.query(User, 'first_name:in=bob,bib,bub')
+  Lou.query(User, 'filter=first_name:in=bob,bib,bub')
 ```
 
 For exmple this filter finds all users with last name 'smith' and a first name of 'Tod' or 'Tom'
 
 ```ruby
-  Lou.query(User, "first_name:eq=smith+last_name:in='tod,tom'
+  Lou.query(User, "filter=first_name:eq=smith+last_name:in='tod,tom'
 ```
 
 #### Multiple Filters
@@ -125,7 +125,7 @@ Combine multiple filters with a +
 
 ```ruby
   # All users with first name 'bob' and a scope of 1, 2, or 3
-  Lou.query(User, 'first_name:eq=bob+scope:in=1,2,3')
+  Lou.query(User, 'filter=first_name:eq=bob+scope:in=1,2,3')
 ```
 
 ## Future
