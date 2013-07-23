@@ -14,6 +14,7 @@ module Lou
     def query(query_string)
       return finalize_collection if !query_string
       search = Search.new query_string
+      # TODO apply_joins search
       apply_filter search
       apply_order search
       apply_limit search
@@ -21,6 +22,10 @@ module Lou
     end
 
     private 
+
+    def apply_joins(search)
+      # TODO 
+    end
 
     def apply_filter(search)
       search.filter.each do |attribute, params|

@@ -128,6 +128,33 @@ Combine multiple filters with a +
   Lou.query(User, 'filter=first_name:eq=bob+scope:in=1,2,3')
 ```
 
+## Virtual Attributes and Joins
+
+Lou allows you to define virtual attibutes on your models that can be used to reference joins.
+
+
+```ruby
+  options = { virtual_attributes: [{ company_id: { joins: :employees } }] }
+
+  Lou.query(User, "filter=employee_id:in=1,2,3+company_id:eq=10, options)
+
+  # results in 
+
+  User.joins(:employees).where(:employees => {:company_id => 77}).where(employee_id: [1,2,3])
+```
+
+NOTE:
+
+Ideally this would be prettier if Lou were a mixin, but I wouldn't bother with that now.
+
+class User < ActiveRecord::Base
+  include Lou
+
+  lou_virtual_attribute company_id: { joins: employee_id }
+end
+
+User.query "filter=employee_id:in=1,2,3,4+company_id:eq=10"
+
 ## Future
 
 Ideas for the future include:

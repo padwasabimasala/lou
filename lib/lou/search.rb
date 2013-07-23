@@ -21,20 +21,33 @@ module Lou
 
     def filter
       unless @filter
-        @filter = {}
-        # ["last_name:eq=Juan de Marco", "category_id:in=1,2,3"] ; last_name:eq=\"Juan de Marco\"+category_id:in=1,2,3
-        rules = ::Shellwords::shellwords (params["filter"].first || "")
-        rules.each do |rule|
-          attribute, operator_and_value = rule.split(':') # "category_id", "in=1,2,3"
-          operator, value = operator_and_value.split('=') # "in", "1,2,3"              
-          value = value.split(',') if operator == "in"    # ['1', '2', '3']
-          @filter[attribute.to_sym] = { operator: operator.to_sym, value: value }
-        end
+        parse_filter
       end
       @filter
     end
 
+    def join
+      unless @join
+        parse_filter
+      end
+      @join
+    end
+
     private
+
+    def parse_filter
+      @filter = {}
+      #TODO @join = {}
+      # ["last_name:eq=Juan de Marco", "category_id:in=1,2,3"] ; last_name:eq=\"Juan de Marco\"+category_id:in=1,2,3
+      rules = ::Shellwords::shellwords (params["filter"].first || "")
+      rules.each do |rule|
+        attribute, operator_and_value = rule.split(':') # "category_id", "in=1,2,3"
+        operator, value = operator_and_value.split('=') # "in", "1,2,3"              
+        value = value.split(',') if operator == "in"    # ['1', '2', '3']
+        # TODO check if the attribute is a virtual attribute if so create a "join" instead of a filter
+        @filter[attribute.to_sym] = { operator: operator.to_sym, value: value }
+      end
+    end
 
     def params
       @params ||= ::CGI::parse @query_string
