@@ -5,7 +5,7 @@ Lou converts query strings to ActiveRecord queries.
 So requests like this
 
 ```bash
-  curl "http://example.com/some_resource?first_name:eq=bob&limit=10"
+  curl "http://example.com/some_resource?filter=first_name:eq=bob&limit=10"
 ```
 
 Become this
@@ -57,7 +57,7 @@ Limits the number of results recturned.
 ```ruby
 
   Lou.query(SomeModel, "limit=10")
-  
+
   # Results in
 
   SomeModel.all.limit(10)
@@ -67,20 +67,20 @@ Limits the number of results recturned.
 
 Orders the results by some column. Direction can be asc, desc, or blank.
 
-```ruby 
+```ruby
 
   Lou.query(SomeModel, "order=id:desc")
 
-  # Results in 
+  # Results in
 
   SomeModel.all.order("id desc")
 ```
 
-```ruby 
+```ruby
 
   Lou.query(SomeModel, "order=id")
 
-  # Results in 
+  # Results in
 
   SomeModel.all.order("id")
 
@@ -88,7 +88,7 @@ Orders the results by some column. Direction can be asc, desc, or blank.
 
 ### Filter
 
-The filter query param allows filtering on multiple fields using a it's own format. 
+The filter query param allows filtering on multiple fields using a it's own format.
 
 Filters support equality, inequality, and inclusion.
 
@@ -108,7 +108,7 @@ Filters support equality, inequality, and inclusion.
 
 #### Inclusion
 
-```ruby 
+```ruby
   # All users with first name 'bob', 'bib', or 'bub'
   Lou.query(User, 'filter=first_name:in=bob,bib,bub')
 ```
@@ -127,6 +127,33 @@ Combine multiple filters with a +
   # All users with first name 'bob' and a scope of 1, 2, or 3
   Lou.query(User, 'filter=first_name:eq=bob+scope:in=1,2,3')
 ```
+
+## Virtual Attributes and Joins
+
+Lou allows you to define virtual attibutes on your models that can be used to reference joins.
+
+
+```ruby
+  options = { virtual_attributes: [{ company_id: { joins: :employees } }] }
+
+  Lou.query(User, "filter=employee_id:in=1,2,3+company_id:eq=10, options)
+
+  # results in
+
+  User.joins(:employees).where(:employees => {:company_id => 77}).where(employee_id: [1,2,3])
+```
+
+NOTE:
+
+Ideally this would be prettier if Lou were a mixin, but I wouldn't bother with that now.
+
+class User < ActiveRecord::Base
+  include Lou
+
+  lou_virtual_attribute company_id: { joins: employee_id }
+end
+
+User.query "filter=employee_id:in=1,2,3,4+company_id:eq=10"
 
 ## Future
 

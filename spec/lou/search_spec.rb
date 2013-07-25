@@ -5,9 +5,12 @@ describe Lou::Search do
     described_class.should be_kind_of Class
   end
 
-  context "with query string 'last_name:eq=\"Juan de Marco\"+category_id:in=1,2,3&limit=10&order=id:desc'" do
-    let(:query_string) { "filter=last_name:eq=\"Juan de Marco\"+category_id:in=1,2,3&limit=10&order=id:desc" }
-    let(:search) { Lou::Search.new(query_string) }
+  context "with query string 'last_name:eq=\"Juan de Marco\"+category_id:in=1,2,3+company_id:eq=77+employee_id:in=4,5&limit=10&order=id:desc'" do
+    let(:query_string) { "filter=last_name:eq=\"Juan de Marco\"+category_id:in=1,2,3+company_id:eq=77+employee_id:in=4,5&limit=10&order=id:desc" }
+    let(:options) { { virtual_attributes: [
+      { company_id: { joins: :employees } },
+      { employee_id: { joins: :employees } }] } }
+    let(:search) { Lou::Search.new(query_string, options) }
 
     it "has a limit of 10" do
       search.limit.should be 10
@@ -22,8 +25,16 @@ describe Lou::Search do
     end
 
     it "has the correct filter" do
+      search.filter.size.should eq 2
       search.filter[:last_name].should eq({ operator: :eq, value: 'Juan de Marco' })
       search.filter[:category_id].should eq ({ operator: :in, value: ['1', '2', '3'] })
+    end
+
+    it "has the correct joins" do
+      search.join.size.should eq 1
+      search.join[:employees].should =~ [
+        { attribute: :company_id, operator: :eq, value: '77' },
+        { attribute: :employee_id, operator: :in, value: ['4', '5'] }]
     end
   end
 
