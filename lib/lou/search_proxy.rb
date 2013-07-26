@@ -16,7 +16,7 @@ module Lou
       if query_string
         search = Search.new query_string, @options
         apply_joins search
-        apply_filter search
+        apply_selectors search
         apply_order search
         apply_limit search
       end
@@ -38,7 +38,7 @@ module Lou
       end
     end
 
-    def apply_filter(search)
+    def apply_selectors(search)
       search.filter.each do |attribute, params|
         value = params[:value]
         case params[:operator]
