@@ -31,8 +31,8 @@ describe Lou::Search do
     end
 
     it "has the correct joins" do
-      search.join.size.should eq 1
-      search.join[:employees].should =~ [
+      search.joins.size.should eq 1
+      search.joins[:employees].should =~ [
         { attribute: :company_id, operator: :eq, value: '77' },
         { attribute: :employee_id, operator: :in, value: ['4', '5'] }]
     end

@@ -27,7 +27,7 @@ module Lou
       @filter
     end
 
-    def join
+    def joins
       unless @join
         parse_filter
       end

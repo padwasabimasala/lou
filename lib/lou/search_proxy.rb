@@ -26,7 +26,7 @@ module Lou
     private
 
     def apply_joins(search)
-      search.join.each do |join_assoc, params_list|
+      search.joins.each do |join_assoc, params_list|
         @collection = collection.joins(join_assoc)
 
         values = {}
