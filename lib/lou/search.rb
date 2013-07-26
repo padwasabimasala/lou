@@ -39,11 +39,7 @@ module Lou
     def parse_filter
       @selectors = {}
       @joins = {}
-      # ["last_name:eq=Juan de Marco", "category_id:in=1,2,3"] ; last_name:eq=\"Juan de Marco\"+category_id:in=1,2,3
-      rules = ::Shellwords::shellwords (params["filter"].first || "")
-      rules.each do |rule|
-        attribute, operator, value = parse_rule rule
-
+      rules do |attribute, operator, value|
         join_assoc_val = join_assoc attribute
         if join_assoc_val
           @joins[join_assoc_val] = [] unless @joins.key? join_assoc_val
@@ -51,6 +47,14 @@ module Lou
         else
           @selectors[attribute] = { operator: operator, value: value }
         end
+      end
+    end
+
+    def rules
+      # ["last_name:eq=Juan de Marco", "category_id:in=1,2,3"] ; last_name:eq=\"Juan de Marco\"+category_id:in=1,2,3
+      rules = ::Shellwords::shellwords (params["filter"].first || "")
+      rules.each do |rule|
+        yield parse_rule rule
       end
     end
 
