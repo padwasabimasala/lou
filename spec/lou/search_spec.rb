@@ -24,10 +24,10 @@ describe Lou::Search do
       search.order_direction.should eq :desc
     end
 
-    it "has the correct filter" do
-      search.filter.size.should eq 2
-      search.filter[:last_name].should eq({ operator: :eq, value: 'Juan de Marco' })
-      search.filter[:category_id].should eq ({ operator: :in, value: ['1', '2', '3'] })
+    it "has the correct selectors" do
+      search.selectors.size.should eq 2
+      search.selectors[:last_name].should eq({ operator: :eq, value: 'Juan de Marco' })
+      search.selectors[:category_id].should eq ({ operator: :in, value: ['1', '2', '3'] })
     end
 
     it "has the correct joins" do
@@ -54,8 +54,8 @@ describe Lou::Search do
       search.order_direction.should eq nil
     end
 
-    it "has an emptyfilter" do
-      search.filter.should eq({})
+    it "has no selectors" do
+      search.selectors.should eq({})
     end
   end
 
@@ -75,8 +75,8 @@ describe Lou::Search do
       search.order_direction.should eq nil
     end
 
-    it "has an emptyfilter" do
-      search.filter.should eq({})
+    it "has no selectors" do
+      search.selectors.should eq({})
     end
   end
 end

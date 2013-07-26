@@ -20,7 +20,7 @@ module Lou
       order.map(&:to_sym).last
     end
 
-    def filter
+    def selectors
       unless @filter
         parse_filter
       end

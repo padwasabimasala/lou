@@ -39,7 +39,7 @@ module Lou
     end
 
     def apply_selectors(search)
-      search.filter.each do |attribute, params|
+      search.selectors.each do |attribute, params|
         value = params[:value]
         case params[:operator]
         when :eq
