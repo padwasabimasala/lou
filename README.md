@@ -134,7 +134,7 @@ Lou allows you to define virtual attibutes on your models that can be used to re
 
 
 ```ruby
-  options = { virtual_attributes: [{ company_id: { joins: :employees } }] }
+  options = { virtual_attributes: { company_id: { joins: :employees } } }
 
   Lou.query(User, "filter=employee_id:in=1,2,3+company_id:eq=10, options)
 
