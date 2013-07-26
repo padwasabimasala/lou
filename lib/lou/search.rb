@@ -3,13 +3,20 @@ require 'shellwords'
 
 module Lou
   class Search
+    attr_reader :order, :joins, :selectors
+
     def initialize(query_string, options={})
       @query_string = query_string || ""
       @options = options
+      @order = []
+      @joins = Hash.new {|h,k| h[k] = []}
+      @selectors = {}
+      parse_order
+      parse_filter
     end
 
     def limit
-      params["limit"].map(&:to_i).first
+      @limit ||= params["limit"].map(&:to_i).first
     end
 
     def order_by
@@ -20,32 +27,32 @@ module Lou
       order.map(&:to_sym).last
     end
 
-    def selectors
-      unless @selectors
-        parse_filter
-      end
-      @selectors
-    end
-
-    def joins
-      unless @joins
-        parse_filter
-      end
-      @joins
-    end
-
     private
 
+    def params
+      @params ||= ::CGI::parse @query_string
+    end
+
+    def parse_order
+      order_options = params["order"].first
+      if order_options.nil?
+        @order  = []
+      elsif order_options =~ /:/
+        @order = order_options.split(':')
+      else
+        @order = [order_options, nil]
+      end
+    end
+
     def parse_filter
-      @selectors = {}
-      @joins = {}
-      rules do |attribute, operator, value|
-        join_assoc_val = join_assoc attribute
-        if join_assoc_val
-          @joins[join_assoc_val] = [] unless @joins.key? join_assoc_val
-          @joins[join_assoc_val] << { attribute: attribute, operator: operator, value: value }
+      rules do |rule|
+        virtual_attr = virtual_attributes[rule[:attribute]]
+        if virtual_attr
+          join = virtual_attr[:joins]
+          @joins[join] << rule
         else
-          @selectors[attribute] = { operator: operator, value: value }
+          attribute = rule.delete :attribute
+          @selectors[attribute] = rule
         end
       end
     end
@@ -62,39 +69,11 @@ module Lou
       attribute, operator_and_value = rule.split(':') # "category_id", "in=1,2,3"
       operator, value = operator_and_value.split('=') # "in", "1,2,3"
       value = value.split(',') if operator == "in"    # ['1', '2', '3']
-      [attribute.to_sym, operator.to_sym, value]
+      { attribute: attribute.to_sym, operator: operator.to_sym, value: value }
     end
 
-    def params
-      @params ||= ::CGI::parse @query_string
+    def virtual_attributes
+      @virtual_attributes ||= (@options[:virtual_attributes] || {})
     end
-
-    def order
-      unless @order
-        order_options = params["order"].first
-        if order_options.nil?
-          @order  = []
-        elsif order_options =~ /:/
-          @order = order_options.split(':')
-        else
-          @order = [order_options, nil]
-        end
-      end
-      @order
-    end
-
-    def virtual_attribute attribute_name
-      if @options.key? :virtual_attributes
-        attribute = @options[:virtual_attributes].detect { |attrib| attrib.has_key? attribute_name }
-        attribute[attribute_name] if attribute
-      end
-    end
-
-    def join_assoc attribute_name
-      attribute = virtual_attribute attribute_name
-      attribute[:joins] if attribute
-    end
-
-
   end
 end
