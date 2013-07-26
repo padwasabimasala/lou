@@ -28,17 +28,17 @@ module Lou
     end
 
     def joins
-      unless @join
+      unless @joins
         parse_filter
       end
-      @join
+      @joins
     end
 
     private
 
     def parse_filter
       @filter = {}
-      @join = {}
+      @joins = {}
       # ["last_name:eq=Juan de Marco", "category_id:in=1,2,3"] ; last_name:eq=\"Juan de Marco\"+category_id:in=1,2,3
       rules = ::Shellwords::shellwords (params["filter"].first || "")
       rules.each do |rule|
@@ -46,8 +46,8 @@ module Lou
 
         join_assoc_val = join_assoc attribute
         if join_assoc_val
-          @join[join_assoc_val] = [] unless @join.key? join_assoc_val
-          @join[join_assoc_val] << { attribute: attribute, operator: operator, value: value }
+          @joins[join_assoc_val] = [] unless @joins.key? join_assoc_val
+          @joins[join_assoc_val] << { attribute: attribute, operator: operator, value: value }
         else
           @filter[attribute] = { operator: operator, value: value }
         end
