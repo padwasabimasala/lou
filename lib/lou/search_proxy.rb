@@ -45,7 +45,7 @@ module Lou
         when :in
           @collection = collection.where(attribute => value)
         when :ne
-          @collection = collection.where.not(attribute => value)
+          @collection = collection.where("#{attribute} != ?", value)
         end
       end
     end
