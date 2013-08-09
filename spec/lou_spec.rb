@@ -5,6 +5,14 @@ describe Lou do
     Lou.should be_kind_of Module
   end
 
+  describe ".setup" do
+    it "can set the logger" do
+      Lou.logger.should be_a Logger
+      Lou.setup logger: :stub_logger
+      Lou.logger.should be :stub_logger
+    end
+  end
+
   context "with nil query string" do
     let(:query_string) { nil }
 
