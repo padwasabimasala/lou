@@ -26,22 +26,20 @@ class Company < ActiveRecord::Base; end
 class Employee < ActiveRecord::Base; end
 
 describe Lou do
-  before :all do
-    @bob = Person.create first_name: :bob, last_name: :smith
-    @ada = Person.create first_name: :ada, last_name: :doe
-    @dub = Person.create first_name: :dub, last_name: :smith
-    @cam = Person.create first_name: :cam, last_name: :jones
-    @eli = Person.create first_name: :eli, last_name: :smith
+  $bob = Person.create first_name: :bob, last_name: :smith
+  $ada = Person.create first_name: :ada, last_name: :doe
+  $dub = Person.create first_name: :dub, last_name: :smith
+  $cam = Person.create first_name: :cam, last_name: :jones
+  $eli = Person.create first_name: :eli, last_name: :smith
 
-    @octanner = Company.create name: "O.C. Tanner"
-    @tadlyco = Company.create name: "Tadly Co"
+  $octanner = Company.create name: "O.C. Tanner"
+  $tadlyco = Company.create name: "Tadly Co"
 
-    Employee.create person_id: @bob.id, company_id: @octanner.id, employee_id: 1234
-    Employee.create person_id: @ada.id, company_id: @octanner.id, employee_id: "abcd"
-    Employee.create person_id: @dub.id, company_id: @octanner.id, employee_id: "zyx9"
-    Employee.create person_id: @cam.id, company_id: @tadlyco.id, employee_id: 1234
-    Employee.create person_id: @eli.id, company_id: @tadlyco.id, employee_id: 5678
-  end
+  Employee.create person_id: $bob.id, company_id: $octanner.id, employee_id: 1234
+  Employee.create person_id: $ada.id, company_id: $octanner.id, employee_id: "abcd"
+  Employee.create person_id: $dub.id, company_id: $octanner.id, employee_id: "zyx9"
+  Employee.create person_id: $cam.id, company_id: $tadlyco.id, employee_id: 1234
+  Employee.create person_id: $eli.id, company_id: $tadlyco.id, employee_id: 5678
 
   describe "order" do
     it "orders asc" do
