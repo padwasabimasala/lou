@@ -1,5 +1,6 @@
 require 'spec_helper'
 require 'active_record'
+require 'pry'
  
 ActiveRecord::Base.logger = Logger.new(STDERR)
 ActiveRecord::Base.establish_connection(:adapter => "sqlite3", :database  => ":memory:")
@@ -21,9 +22,20 @@ ActiveRecord::Schema.define do
   end
 end
  
-class Person < ActiveRecord::Base; end
-class Company < ActiveRecord::Base; end
-class Employee < ActiveRecord::Base; end
+class Person < ActiveRecord::Base
+  has_many :employees
+  has_many :companies, through: :employees 
+end
+
+class Company < ActiveRecord::Base
+  has_many :employees
+  has_many :people, through: :employees 
+end
+
+class Employee < ActiveRecord::Base
+  belongs_to :company
+  belongs_to :person
+end
 
 describe Lou do
   $bob = Person.create first_name: :bob, last_name: :smith
@@ -40,6 +52,51 @@ describe Lou do
   Employee.create person_id: $dub.id, company_id: $octanner.id, employee_id: "zyx9"
   Employee.create person_id: $cam.id, company_id: $tadlyco.id, employee_id: 1234
   Employee.create person_id: $eli.id, company_id: $tadlyco.id, employee_id: 5678
+
+  describe "virtual attributes",focus:true do
+
+    # { virtual_attributes: { company_id: { joins: :employees }, employee_id: { joins: :employees } } }
+    context "with a single virtual attribute" do
+      it "joins the table" do
+        opts = { virtual_attributes: { employee_id: { joins: :employees }} }
+
+        query = "filter=employee_id:eq=abcd"
+        res = Lou.query(Company, query, opts)
+        res.should eq [$octanner]
+
+        query = "filter=employee_id:eq=1234"
+        res = Lou.query(Company, query, opts)
+        res.should eq [$octanner,$tadlyco]
+
+        query = "filter=employee_id:eq=5678"
+        res = Lou.query(Company, query, opts)
+        res.should eq [$tadlyco]
+      end
+    end
+
+    # { virtual_attributes: { company_id: { joins: :employees }, employee_id: { joins: :employees } } }
+    context "with two virtual attribute" do
+      it "can join the table on either attribute" do
+        opts = { virtual_attributes: { employee_id: { joins: :employees }, company_id:  { joins: :employees} } }
+
+        query = "filter=employee_id:eq=1234"
+        res = Lou.query(Person, query, opts)
+        res.should eq [$bob, $cam]
+
+        query = "filter=company_id:eq=#{$tadlyco.id}"
+        res = Lou.query(Person, query, opts)
+        res.should eq [$cam, $eli]
+      end
+
+      it "can join the table on both attributes" do
+        opts = { virtual_attributes: { employee_id: { joins: :employees }, company_id:  { joins: :employees} } }
+
+        query = "filter=employee_id:eq=1234+company_id:eq=#{$octanner.id}"
+        res = Lou.query(Person, query, opts)
+        res.should eq [$bob]
+      end
+    end
+  end
 
   describe "order" do
     it "orders asc" do

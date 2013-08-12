@@ -14,6 +14,7 @@ module Lou
 
     def query(query_string)
       if query_string
+        # refactor parse_query_string \n apply_joins
         search = Search.new query_string, @options
         apply_joins search
         apply_selectors search
@@ -26,13 +27,22 @@ module Lou
     private
 
     def apply_joins(search)
-      search.joins.each do |join_assoc, params_list|
-        @collection = collection.joins(join_assoc)
-        values = {}
-        params_list.each do |params|
-          values[params[:attribute]] = params[:value]
+      # joins {:employees=>[ .. ]}
+      search.joins.each do |table_name, params| 
+        @collection = collection.joins(table_name)
+        # params {:attribute=>:company_id, :operator=>:eq, :value=>"77"}, {:attribute=>:employee_id, :operator=>:in, :value=>["4", "5"]}
+        params.each do |params|
+          # Person.where(employees: {company_id: 1})
+          attribute, value, operator = params[:attribute], params[:value], params[:operator]
+          case operator
+          when :eq
+            @collection = collection.where(table_name => { attribute => value })
+          when :in
+            @collection = collection.where(table_name => { attribute => value })
+          when :ne
+            @collection = collection.where(table_name => ["#{attribute} != ?", value])
+          end
         end
-        @collection = collection.where(join_assoc => values)
       end
     end
 

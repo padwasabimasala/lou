@@ -45,10 +45,11 @@ module Lou
     end
 
     def parse_filter
-      rules do |rule|
-        virtual_attr = virtual_attributes[rule[:attribute]]
-        if virtual_attr
-          join = virtual_attr[:joins]
+      filter_rules do |rule|
+        # { virtual_attributes: { company_id: { joins: :employees }, employee_id: { joins: :employees } } }
+        join_config = virtual_attributes[rule[:attribute]] # join column
+        if join_config
+          join = join_config[:joins]
           @joins[join] << rule
         else
           attribute = rule.delete :attribute
@@ -57,19 +58,20 @@ module Lou
       end
     end
 
-    def rules
+    def filter_rules
       # ["last_name:eq=Juan de Marco", "category_id:in=1,2,3"] ; last_name:eq=\"Juan de Marco\"+category_id:in=1,2,3
       rules = ::Shellwords::shellwords (params["filter"].first || "")
       rules.each do |rule|
-        yield parse_rule rule
+        yield parse_filter_rule rule
       end
     end
 
-    def parse_rule rule
+    def parse_filter_rule rule
       attribute, operator_and_value = rule.split(':') # "category_id", "in=1,2,3"
+      attribute = attribute.to_sym
       operator, value = operator_and_value.split('=') # "in", "1,2,3"
       value = value.split(',') if operator == "in"    # ['1', '2', '3']
-      { attribute: attribute.to_sym, operator: operator.to_sym, value: value }
+      { attribute: attribute, operator: operator.to_sym, value: value }
     end
 
     def virtual_attributes
