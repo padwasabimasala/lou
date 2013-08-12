@@ -7,10 +7,10 @@ describe Lou::SearchProxy do
 
   it "parses the query into ActiveRecord query chain" do
     PersonMock.should_receive(:joins).with(:employees).and_call_original
-    PersonMock.should_receive(:where).with(employees: { company_id: "33", employee_id: ["9","8","7"] }).and_call_original
+    PersonMock.should_receive(:where).with(employees: { company_id: "33" }).and_call_original
+    PersonMock.should_receive(:where).with(employees: { employee_id: ["9","8","7"] }).and_call_original
     PersonMock.should_receive(:where).with(first_name: "david").and_call_original
-    PersonMock.should_receive(:where).with().and_call_original
-    PersonMock.should_receive(:not).with(last_name: "benjesse").and_call_original
+    PersonMock.should_receive(:where).with("last_name != ?", "benjesse").and_call_original
     PersonMock.should_receive(:where).with(category_id: ["1", "2", "3"]).and_call_original
     PersonMock.should_receive(:limit).with(10).and_call_original
     PersonMock.should_receive(:order).with("id desc").and_call_original
