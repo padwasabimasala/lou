@@ -75,7 +75,7 @@ describe Lou do
     end
 
     # { virtual_attributes: { company_id: { joins: :employees }, employee_id: { joins: :employees } } }
-    context "with two virtual attribute" do
+    context "with two virtual attributes" do
       it "can join the table on either attribute" do
         opts = { virtual_attributes: { employee_id: { joins: :employees }, company_id:  { joins: :employees} } }
 
@@ -94,6 +94,22 @@ describe Lou do
         query = "filter=employee_id:eq=1234+company_id:eq=#{$octanner.id}"
         res = Lou.query(Person, query, opts)
         res.should eq [$bob]
+      end
+
+      it "can join and find using inclusion" do
+        opts = { virtual_attributes: { employee_id: { joins: :employees }, company_id:  { joins: :employees} } }
+
+        query = "filter=employee_id:in=1234,zyx9"
+        res = Lou.query(Person, query, opts)
+        res.sort.should eq [$bob,$dub,$cam]
+      end
+
+      it "can join and find using inclusion and equality" do
+        opts = { virtual_attributes: { employee_id: { joins: :employees }, company_id:  { joins: :employees} } }
+
+        query = "filter=employee_id:in=1234,zyx9+company_id:eq=#{$octanner.id}"
+        res = Lou.query(Person, query, opts)
+        res.sort.should eq [$bob,$dub]
       end
     end
   end
