@@ -3,7 +3,8 @@ require 'shellwords'
 
 module Lou
   class QueryStringParser
-    attr_reader :order, :joins, :selectors
+    attr :order
+    attr_reader :joins, :selectors
 
     def initialize(query_string, options={})
       @query_string = query_string || ""
