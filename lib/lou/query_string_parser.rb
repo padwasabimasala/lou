@@ -2,7 +2,7 @@ require 'cgi'
 require 'shellwords'
 
 module Lou
-  class Search
+  class QueryStringParser
     attr_reader :order, :joins, :selectors
 
     def initialize(query_string, options={})

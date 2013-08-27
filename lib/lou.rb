@@ -1,9 +1,9 @@
-require 'lou/version'
 require 'logger'
 
 module Lou
-  require 'lou/search_proxy'
-  require 'lou/search'
+  autoload :QueryBuilder, 'lou/query_builder'
+  autoload :QueryStringParser, 'lou/query_string_parser'
+  autoload :Version, 'lou/version'
 
   def self.setup(options={})
     if options[:logger]
@@ -15,7 +15,12 @@ module Lou
     @logger ||= ::Logger.new(STDERR)
   end
 
-  def self.query(model, query_string, opts={}) # rename search
-    SearchProxy.new(model, opts).query query_string
+
+  def self.search(model, query_string, opts={})
+    QueryBuilder.new(model, opts).query query_string
+  end
+
+  def self.query(model, query_string, opts={}) # depricated
+    search model, query_string, opts
   end
 end

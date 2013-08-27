@@ -1,8 +1,8 @@
-require 'cgi'
-require 'shellwords'
-
 module Lou
-  class SearchProxy
+  class QueryBuilder
+    require 'cgi'
+    require 'shellwords'
+
     attr_reader :collection
 
     def initialize(model, options={})
@@ -15,7 +15,7 @@ module Lou
     def query(query_string)
       if query_string
         # refactor parse_query_string \n apply_joins
-        search = Search.new query_string, @options
+        search = QueryStringParser.new query_string, @options
         apply_joins search
         apply_selectors search
         apply_order search
