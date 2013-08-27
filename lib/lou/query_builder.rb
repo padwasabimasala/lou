@@ -1,5 +1,5 @@
 module Lou
-  class SearchProxy
+  class QueryBuilder
     require 'cgi'
     require 'shellwords'
 
