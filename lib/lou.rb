@@ -15,7 +15,12 @@ module Lou
     @logger ||= ::Logger.new(STDERR)
   end
 
-  def self.query(model, query_string, opts={}) # rename search
+
+  def self.search(model, query_string, opts={})
     QueryBuilder.new(model, opts).query query_string
+  end
+
+  def self.query(model, query_string, opts={}) # depricated
+    search model, query_string, opts
   end
 end
