@@ -17,6 +17,7 @@ module Lou
 
 
   def self.search(model, query_string, opts={})
+    logger.info "Lou search : model=#{model.inspect} query_string='#{query_string}' opts=#{opts.inspect}"
     QueryBuilder.new(model, opts).query query_string
   end
 

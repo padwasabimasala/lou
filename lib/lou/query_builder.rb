@@ -77,7 +77,7 @@ module Lou
 
     def apply_finalize
       append_condition :all
-      Lou.logger.info "final query conditions: #{@conditions_log.join ''}"
+      Lou.logger.info "Lou conditions : #{@conditions_log.join('')}"
     end
   end
 end
