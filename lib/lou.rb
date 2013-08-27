@@ -2,8 +2,8 @@ require 'lou/version'
 require 'logger'
 
 module Lou
+  require 'lou/query_string_parser'
   require 'lou/search_proxy'
-  require 'lou/search'
 
   def self.setup(options={})
     if options[:logger]

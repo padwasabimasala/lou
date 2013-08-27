@@ -1,13 +1,9 @@
 require 'spec_helper'
 
-describe Lou::Search do
-  it "works" do
-    described_class.should be_kind_of Class
-  end
-
+describe Lou::QueryStringParser do
   context "with with kitchen sink (virtual attributes, filter, orders, and limit)" do
     let(:query_string) { "filter=last_name:eq=\"Juan de Marco\"+category_id:in=1,2,3+company_id:eq=77+employee_id:in=4,5&limit=10&order=id:desc" }
-    let(:search) { Lou::Search.new(query_string, options) }
+    let(:search) { described_class.new(query_string, options) }
     let(:options) {{ 
       virtual_attributes: {
         company_id: { joins: :employees },
@@ -42,7 +38,7 @@ describe Lou::Search do
   end
 
   context "with with virtual attributes in the options" do
-    let(:search) { Lou::Search.new(query_string, options) }
+    let(:search) { described_class.new(query_string, options) }
     let(:options) {{ 
       virtual_attributes: {
         company_id: { joins: :employees },
@@ -72,7 +68,7 @@ describe Lou::Search do
 
   context "with nil query string" do
     let(:query_string) { nil }
-    let(:search) { Lou::Search.new(query_string) }
+    let(:search) { described_class.new(query_string) }
 
     it "has a limit of nil" do
       search.limit.should be nil
@@ -93,7 +89,7 @@ describe Lou::Search do
 
   context "with an empty query string" do
     let(:query_string) { "" }
-    let(:search) { Lou::Search.new(query_string) }
+    let(:search) { described_class.new(query_string) }
 
     it "has a limit of nil" do
       search.limit.should be nil
