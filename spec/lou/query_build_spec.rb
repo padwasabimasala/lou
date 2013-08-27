@@ -9,7 +9,7 @@ describe Lou::QueryBuilder do
     PersonMock.should_receive(:where).with("last_name != ?", "benjesse").and_call_original
     PersonMock.should_receive(:where).with(category_id: ["1", "2", "3"]).and_call_original
     PersonMock.should_receive(:limit).with(10).and_call_original
-    PersonMock.should_receive(:order).with("id desc").and_call_original
+    PersonMock.should_receive(:order).with({ id: :desc }).and_call_original
     options = { virtual_attributes: { company_id: { joins: :employees }, employee_id: { joins: :employees } }}
     described_class.new(PersonMock, options).query "filter=first_name:eq=david+last_name:ne=benjesse+category_id:in=1,2,3+company_id:eq=33+employee_id:in=9,8,7&limit=10&order=id:desc"
   end

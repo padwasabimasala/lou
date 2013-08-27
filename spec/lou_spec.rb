@@ -2,10 +2,12 @@ require 'spec_helper'
 
 describe Lou do
   describe ".setup" do
+    let(:logger) { Logger.new(STDERR) } #stub(:logger, fatal: nil, error: nil, warn: nil, info: nil, debug: nil) }
+
     it "can set the logger" do
       Lou.logger.should be_a Logger
-      Lou.setup logger: :stub_logger
-      Lou.logger.should be :stub_logger
+      Lou.setup logger: logger
+      Lou.logger.should be logger
     end
   end
 
